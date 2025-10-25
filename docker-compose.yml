@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .         # Build iz root-a gde je Dockerfile
+      dockerfile: Dockerfile
+    container_name: ribarnica-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ribarnica
+      DB_USERNAME: admin
+      DB_PASSWORD: admin
+
+  db:
+    image: mysql:8.0
+    container_name: ribarnica-db
+    restart: always
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ribarnica
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
