@@ -20,20 +20,31 @@ exec:
 	docker exec -it $(APP_CONTAINER) bash
 
 migrate:
-	docker exec -it $(APP_CONTAINER) php artisan migrate
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate
 
 migrate-fresh:
-	docker exec -it $(APP_CONTAINER) php artisan migrate:fresh
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate:fresh
 
 tinker:
-	docker exec -it $(APP_CONTAINER) php artisan tinker
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan tinker
 
 key:
-	docker exec -it $(APP_CONTAINER) php artisan key:generate
+	# Ako .env ne postoji, kopira .env.example
+	@test -f ./app/.env || cp ./app/.env.example ./app/.env
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
 
 # --- MySQL komande ---
 mysql:
 	docker exec -it $(DB_CONTAINER) mysql -uadmin -p
 
 seed:
-	docker exec -it $(APP_CONTAINER) php artisan db:seed
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
+
+# --- Build sve odjednom ---
+build: 
+	# Kreira .env ako ne postoji i generiše key
+	@test -f ./app/.env || cp ./app/.env.example ./app/.env
+	docker-compose up -d --build
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate --force
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
