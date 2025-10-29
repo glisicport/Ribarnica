@@ -41,8 +41,15 @@ seed:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
 
 # --- Build sve odjednom ---
-build: 
-	# Kreira .env ako ne postoji i generiše key
+
+build:
+ifeq ($(OS),Windows_NT)
+	if not exist app\.env copy .\.env.example app\.env
+else
+	@if [ ! -f app/.env ]; then cp ./.env.example app/.env; fi
+endif
+	docker exec -it ribarnica-app composer require fakerphp/faker --dev
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
-	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate --force
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate:fresh --force
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
+
