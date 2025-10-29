@@ -43,7 +43,7 @@ seed:
 # --- Build sve odjednom ---
 
 build:
-docker-compose up -d --build
+	docker-compose up -d --build
 ifeq ($(OS),Windows_NT)
 	if not exist app\.env copy .\.env.example app\.env
 else
