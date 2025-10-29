@@ -43,8 +43,6 @@ seed:
 # --- Build sve odjednom ---
 build: 
 	# Kreira .env ako ne postoji i generiše key
-	@test -f ./app/.env || cp ./app/.env.example ./app/.env
-	docker-compose up -d --build
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate --force
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
