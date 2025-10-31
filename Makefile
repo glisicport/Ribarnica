@@ -1,8 +1,7 @@
-# --- Osnovne varijable ---
 APP_CONTAINER=ribarnica-app
 DB_CONTAINER=ribarnica-db
 
-# --- Docker komande ---
+# Pokretanje kontejnera
 up:
 	docker-compose up -d --build
 
@@ -15,10 +14,10 @@ logs:
 ps:
 	docker-compose ps
 
-# --- Laravel komande ---
 exec:
 	docker exec -it $(APP_CONTAINER) bash
 
+# Laravel migracije i seed
 migrate:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate
 
@@ -29,28 +28,19 @@ tinker:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan tinker
 
 key:
-	# Ako .env ne postoji, kopira .env.example
-	@test -f ./app/.env || cp ./app/.env.example ./app/.env
+	if not exist app\.env copy app\.env.example app\.env
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
 
-# --- MySQL komande ---
 mysql:
-	docker exec -it $(DB_CONTAINER) mysql -uadmin -p
+	docker exec -it $(DB_CONTAINER) mysql -uadmin -padmin ribarnica
 
 seed:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
 
-# --- Build sve odjednom ---
+# Kombinovani cilj za pripremu baze
+baza:  migrate-fresh seed
+	@echo "Baza spremna!"
 
-build:
-	docker-compose up -d --build
-ifeq ($(OS),Windows_NT)
-	if not exist app\.env copy .\.env.example app\.env
-else
-	@if [ ! -f app/.env ]; then cp ./.env.example app/.env; fi
-endif
-	docker exec -it ribarnica-app composer require fakerphp/faker --dev
-	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
-	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate:fresh --force
-	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
-
+# Novi build cilj
+build: key up baza
+	@echo "Projekat izgradjen i baza spremna!"
