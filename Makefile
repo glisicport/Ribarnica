@@ -42,5 +42,5 @@ baza:  migrate-fresh seed
 	@echo "Baza spremna!"
 
 # Novi build cilj
-build: key up baza
+build:  up key baza
 	@echo "Projekat izgradjen i baza spremna!"
