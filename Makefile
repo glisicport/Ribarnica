@@ -28,9 +28,9 @@ tinker:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan tinker
 
 key:
-	if not exist app\.env copy app\.env.example app\.env
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan key:generate
-
+env:
+	copy app\.env.example app\.env
 mysql:
 	docker exec -it $(DB_CONTAINER) mysql -uadmin -padmin ribarnica
 
@@ -42,5 +42,5 @@ baza:  migrate-fresh seed
 	@echo "Baza spremna!"
 
 # Novi build cilj
-build:  up key baza
+build: env up key baza seed
 	@echo "Projekat izgradjen i baza spremna!"
