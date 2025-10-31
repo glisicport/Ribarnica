@@ -38,7 +38,7 @@ seed:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
 
 # Kombinovani cilj za pripremu baze
-baza:  migrate-fresh 
+baza:  migrate 
 	@echo "Baza spremna!"
 
 # Novi build cilj
