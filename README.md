@@ -19,6 +19,15 @@ Ova komanda automatski:
 - Pokreće migracije
 - Seeduje bazu podataka
 
+Ucitavanje definicija tabela baze podataka
+```bash
+make baza
+```
+
+Popunjavanje baze sample podacima
+```bash
+make seed
+```
 ---
 
 ## Svakodnevno korišćenje
