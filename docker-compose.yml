@@ -8,8 +8,8 @@ services:
     container_name: ribarnica-app
     volumes:
       - ./app:/var/www/html
-      - /var/www/html/vendor  # Ovo excluduje vendor iz mount-a
-      - /var/www/html/node_modules  # I ovo ako imaš node
+      - /var/www/html/vendor  
+      - /var/www/html/node_modules  
     ports:
       - "8000:8000"
     depends_on:
