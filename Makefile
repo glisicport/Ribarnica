@@ -1,7 +1,9 @@
 APP_CONTAINER=ribarnica-app
 DB_CONTAINER=ribarnica-db
 
-# Pokretanje kontejnera
+# -------------------------------
+# Pokretanje i zaustavljanje
+# -------------------------------
 up:
 	docker-compose up -d --build
 
@@ -17,7 +19,9 @@ ps:
 exec:
 	docker exec -it $(APP_CONTAINER) bash
 
+# -------------------------------
 # Composer komande
+# -------------------------------
 composer-install:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) composer install
 
@@ -32,7 +36,9 @@ composer-local:
 	cd app && composer install
 	@echo "Vendor folder instaliran lokalno za IDE!"
 
+# -------------------------------
 # Laravel migracije i seed
+# -------------------------------
 migrate:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate
 
@@ -54,19 +60,46 @@ mysql:
 seed:
 	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan db:seed
 
+# Kopiranje vendor foldera iz Dockera
 composer:
 	if not exist app\vendor mkdir app\vendor
-	docker cp ribarnica-app:/var/www/html/vendor/. app\vendor
+	docker cp $(APP_CONTAINER):/var/www/html/vendor/. app\vendor
 
+# -------------------------------
+# Kreiranje modela, kontrolera i tabele preko Dockera
+# -------------------------------
 
-# Kombinovani cilj za pripremu baze
-baza: migrate 
+# -------------------------------
+
+# Kreira model + migraciju, koristi argument MODEL=ImeModela
+model:
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan make:model $(MODEL) -m
+	@echo "Model $(MODEL) kreiran!"
+
+# Kreira kontroler, koristi argument CONTROLLER=ImeKontrolera
+controller:
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan make:controller $(CONTROLLER)
+	@echo "Kontroler $(CONTROLLER) kreiran!"
+
+# Kreira model + migraciju za tabelu, koristi argument MODEL=ImeModela
+table:
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan make:model $(MODEL) -m
+	@echo "Model $(MODEL) i migracija kreirani!"
+	@echo "Uredi migraciju u database/migrations i dodaj kolone pre pokretanja migrate."
+
+# Rollback poslednje migracije (brisanje tabele)
+drop-table:
+	docker exec -it -w /var/www/html $(APP_CONTAINER) php artisan migrate:rollback --step=1
+	@echo "Rollback poslednje migracije izvršen!""
+
+# -------------------------------
+# Kombinovani ciljevi
+# -------------------------------
+baza: migrate
 	@echo "Baza spremna!"
 
-# Novi build cilj
-build: env up key 
+build: env up key
 	@echo "Projekat izgradjen i baza spremna!"
 
-# Dev setup sa lokalnim vendor-om
 dev-setup: env up key composer-local
 	@echo "Development okruzenje spremno sa lokalnim vendor folderom!"
