@@ -619,6 +619,7 @@
         let cartCount = 0;
 
         const products = @json($products);
+        console.log(products);
         const productsGrid = document.getElementById('productsGrid');
 
         function capitalizeFirstLetter(string) {
