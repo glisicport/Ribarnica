@@ -9,9 +9,9 @@ class HomeController extends Controller
     public function index()
     {
 
-        $products = Product::all();
+        $featuredProducts  = Product::all();
         $title = 'Dobrodošli u Ribarnicu';
         $description = 'Najbolji izbor sveže ribe i morskih plodova direktno sa obale.';
-        return view('home', compact('title', 'description', 'products'));
+        return view('home', compact('title', 'description', 'featuredProducts'));
     }
 }

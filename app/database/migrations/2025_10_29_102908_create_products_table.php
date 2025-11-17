@@ -15,11 +15,8 @@ return new class extends Migration {
             $table->string('name');
             $table->decimal('price', 10, 2);
             $table->string('category');
-            $table->decimal('rating', 2, 1);
             $table->text('description')->nullable();
-            $table->string('icon')->nullable();
-            $table->string('gradient')->nullable();
-            $table->string('badge')->nullable();
+            $table->string('file_path');
             $table->timestamps();
         });
     }
