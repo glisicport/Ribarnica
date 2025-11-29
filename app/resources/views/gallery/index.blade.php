@@ -90,7 +90,7 @@ h1 { text-align:center; margin:30px 0; color:#ffffff; font-size:2.5em; }
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
-                    Nazad na
+                    Nazad
                 </span>
                 <div class="absolute inset-0 bg-gradient-to-r from-blue-900 to-slate-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </button>
