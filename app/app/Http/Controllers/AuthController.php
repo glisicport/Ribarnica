@@ -12,32 +12,43 @@ class AuthController extends Controller
     public function index()
     {
         if (Auth::check()) {
+            if(Auth::user()->role=="admin")
             return redirect()->intended('/kontrolni-panel');
+            else redirect()->intended("/korisnicki-nalog");
         }
 
         return view('prijava.index');
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ], [
-            'email.required' => 'Polje E-mail adresa je obavezno.',
-            'email.email' => 'Unesite validnu e-mail adresu.',
-            'password.required' => 'Polje Lozinka je obavezno.',
-        ]);
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string'],
+    ], [
+        'email.required' => 'Polje E-mail adresa je obavezno.',
+        'email.email' => 'Unesite validnu e-mail adresu.',
+        'password.required' => 'Polje Lozinka je obavezno.',
+    ]);
 
     if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
-            return redirect()->intended('/kontrolni-panel')->with('status', 'Uspešno ste se prijavili!');
+        $request->session()->regenerate();
+
+        if (Auth::user()->role === "admin") {
+            return redirect()->intended('/kontrolni-panel')
+                ->with('status', 'Uspešno ste se prijavili!');
         }
 
-        throw ValidationException::withMessages([
-            'email' => ['Ovi podaci se ne podudaraju sa našim zapisima.'],
-        ])->redirectTo(route('prijava'));
+        if (Auth::user()->role === "user") {
+            return redirect()->intended('/korisnicki-nalog');
+        }
     }
+
+    throw ValidationException::withMessages([
+        'email' => ['Ovi podaci se ne podudaraju sa našim zapisima.'],
+    ])->redirectTo(route('prijava'));
+}
+
 
     public function update(Request $request)
     {

@@ -18,8 +18,14 @@ class DatabaseSeeder extends Seeder
        $this->call([
           UserSeeder::class,
         ProductCategorySeeder::class,
-        ProductSeeder::class,
     ]);
         
+        $this->call(ProductSeeder::class);
+        $this->call(ambijentSeeder::class);
+        $this->call(gallerySeeder::class);
+        
+    
+        $this->call(EmployeeSeeder::class);
+        $this->call(about_usSeeder::class);
     }
 }

@@ -1,0 +1,54 @@
+.modal-hidden {
+    display: none !important;
+    pointer-events: none;
+}
+
+.modal-visible {
+    display: flex !important;
+    pointer-events: auto;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.tab-active {
+    @apply border-b-2 border-brand-600 text-brand-600;
+}
+
+.tab-inactive {
+    @apply border-b-2 border-transparent text-slate-600 hover:text-slate-800;
+}
+
+.tab-active {
+    color: #4f46e5;
+    border-bottom: 2px solid #4f46e5;
+}
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
