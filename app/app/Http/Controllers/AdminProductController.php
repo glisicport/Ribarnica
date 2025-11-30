@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends Controller
 {
+    /**
+     * Čuva novi proizvod u bazi
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -20,6 +23,7 @@ class AdminProductController extends Controller
             'file_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Upload slike - Updated to use 'uploads/images'
         if ($request->hasFile('file_path')) {
             $validated['file_path'] = $request->file('file_path')->store('uploads/images', 'public');
         }
@@ -29,6 +33,9 @@ class AdminProductController extends Controller
         return redirect()->back()->with('success', 'Proizvod je uspešno dodat!');
     }
 
+    /**
+     * Ažurira proizvod
+     */
     public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
@@ -39,7 +46,9 @@ class AdminProductController extends Controller
             'file_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Upload nove slike - Updated to use 'uploads/images'
         if ($request->hasFile('file_path')) {
+            // Obriši staru sliku
             if ($product->file_path) {
                 Storage::disk('public')->delete($product->file_path);
             }
@@ -51,8 +60,12 @@ class AdminProductController extends Controller
         return redirect()->back()->with('success', 'Proizvod je uspešno ažuriran!');
     }
 
+    /**
+     * Briše proizvod
+     */
     public function destroy(Product $product)
     {
+        // Obriši sliku ako postoji
         if ($product->file_path) {
             Storage::disk('public')->delete($product->file_path);
         }

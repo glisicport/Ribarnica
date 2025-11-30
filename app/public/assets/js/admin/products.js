@@ -3,7 +3,7 @@ function openProductModal() {
     document.getElementById('productMethod').value = 'POST';
     document.getElementById('productId').value = '';
     document.getElementById('productModalTitle').textContent = 'Novi Proizvod';
-    document.getElementById('productForm').action = '{{ route("admin.products.store") }}';
+    document.getElementById('productForm').action = '/admin/products/';
     document.getElementById('productModal').classList.remove('modal-hidden');
     document.getElementById('productModal').classList.add('modal-visible');
 }
