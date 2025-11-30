@@ -40,11 +40,60 @@
                 </nav>
 
                 <div class="flex items-center space-x-4">
-                    <button onclick="openLogin()"
-                        class="hidden md:flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition glass-effect">
-                        <i class="fas fa-user"></i>
-                        <span>Prijava</span>
+    <!--
+    Ovaj fajl simulira deo navigacione trake.
+    Koristi se Font Awesome i stlizacija u "glassmorphism" stilu
+    za moderan izgled. Dropdown se kontroliše pomoću Tailwind/CSS
+    klase "group" i "group-hover".
+-->
+
+<div class="flex items-center space-x-4">
+
+    <!-- Ako je korisnik ulogovan (Auth::check()) -->
+    @if(Auth::check())
+        <div class="relative hidden md:flex group">
+            {{-- Dugme koje prikazuje ime --}}
+            <button
+                class="flex items-center space-x-2 bg-white/20 hover:bg-white/30 px-4 py-2 rounded-full transition focus:outline-none backdrop-blur-sm shadow-md">
+                <i class="fas fa-user text-white"></i>
+                <span class="text-white font-medium">Korisnik: {{ Auth::user()->name }}</span>
+                <i class="fas fa-chevron-down ml-2 text-white text-xs"></i>
+            </button>
+
+            {{-- Dropdown meni koji ide ispod dugmeta (Prikazuje se na hover) --}}
+            <div
+                class="absolute right-0 mt-12 w-48 bg-gray-900/80 backdrop-blur-md rounded-xl shadow-xl py-2 
+                       opacity-0 invisible group-hover:opacity-100 group-hover:visible 
+                       transition-all duration-300 z-50 transform group-hover:translate-y-0 translate-y-2">
+                
+                <h3 class="px-4 pt-2 text-xs font-semibold uppercase text-gray-400 border-b border-gray-700 pb-2 mb-1">
+                    Opcije
+                </h3>
+                
+                <a href="{{ route('korisnicki-nalog') }}"
+                   class="block px-4 py-2 text-white hover:bg-indigo-600/50 hover:text-white rounded-md transition duration-150">
+                    <i class="fas fa-cog mr-2"></i> Korisnički panel
+                </a>
+                
+                <form method="POST" action="{{ route('odjava') }}" class="pt-1 border-t border-gray-700 mt-1">
+                    @csrf
+                    <button type="submit"
+                            class="w-full text-left px-4 py-2 text-red-300 hover:bg-red-600/50 hover:text-white rounded-md transition duration-150">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Odjavi se
                     </button>
+                </form>
+            </div>
+        </div>
+    @else
+           <a href="{{ route('prijava') }}"
+       class="hidden md:flex items-center space-x-2 bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-full transition glass-effect">
+        <i class="fas fa-user"></i>
+        <span>Prijava</span>
+    </a>
+    @endif
+    
+</div>
+
                     <button class="relative hover:text-blue-200 transition">
                         <i class="fas fa-shopping-cart text-xl"></i>
                         <span id="cartCount"
@@ -72,11 +121,33 @@
                 <a href="#kontakt" class="block hover:text-blue-200 transition flex items-center space-x-2">
                     <i class="fas fa-envelope"></i>
                     <span>Kontakt</span>
-                </a>
-                <button onclick="openLogin()" class="flex items-center space-x-2 hover:text-blue-200 transition">
-                    <i class="fas fa-user"></i>
-                    <span>Prijava</span>
-                </button>
+     <div class="flex items-center space-x-4">
+    {{-- Provera da li je korisnik ulogovan --}}
+    @if(Auth::check())
+        {{-- Prikazuje se ako je ulogovan --}}
+        <a href="{{ route('korisnicki-nalog') }}" class="flex items-center space-x-2 hover:text-blue-200 transition">
+            <i class="fas fa-user"></i>
+            <span>{{ Auth::user()->name }}</span>
+        </a>
+
+        {{-- Logout dugme --}}
+        <form method="POST" action="{{ route('odjava') }}">
+            @csrf
+            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded transition">
+                Odjavi se
+            </button>
+        </form>
+    @else
+        {{-- Prikazuje se ako nije ulogovan --}}
+        <a href="{{ route('prijava') }}" class="flex items-center space-x-2 hover:text-blue-200 transition">
+            <i class="fas fa-user"></i>
+            <span>Prijava</span>
+        </a>
+@endif
+</div>
+
+
+
             </nav>
         </div>
     </header>
