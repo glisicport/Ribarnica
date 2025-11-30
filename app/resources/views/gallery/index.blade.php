@@ -123,7 +123,7 @@ h1 { text-align:center; margin:30px 0; color:#ffffff; font-size:2.5em; }
                         <!-- Slika container -->
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/50">
                             <img 
-                                src="{{ asset('images/ambijent/'.$image) }}" 
+                                src="{{ asset($image) }}" 
                                 alt="{{ $title }}"
                                 class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110">
                             
@@ -250,7 +250,7 @@ function showMeni(){
         div.className = "slide";
 
         div.innerHTML = `
-            <img src="{{ asset('images/ambijent/meni.png') }}"
+            <img src="{{ asset('storage/images/ambijent/meni.png') }}"
                  style="width:100%; height:auto; object-fit:contain; border-radius:15px;">
             <p style="color:white; font-size:1.2em;">Meni</p>
         `;
