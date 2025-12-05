@@ -74,10 +74,6 @@
             height: 300px;
         }
 
-        .navbar-scroll {
-            transition: all 0.3s;
-        }
-
         .feature-card {
             transition: all 0.3s;
         }
@@ -87,12 +83,9 @@
         }
 
         @keyframes float {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: translateY(0px);
             }
-
             50% {
                 transform: translateY(-20px);
             }
@@ -124,6 +117,13 @@
             display: inline-block;
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
         }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
     </style>
 </head>
 
@@ -141,18 +141,20 @@
                     Vrhunski kvalitet, tradicija i poverenje - više od 15 godina sa vama
                 </p>
 
-                <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-3 flex flex-col md:flex-row gap-3">
-                    <div class="flex-1 relative">
-                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="searchInput" placeholder="Pretražite naše proizvode..."
-                            class="w-full pl-12 pr-4 py-4 text-gray-700 outline-none rounded-xl"
-                            onkeyup="filterProducts()">
-                    </div>
-                    <button
-                        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-xl transition flex items-center justify-center space-x-2 font-semibold shadow-lg">
-                        <i class="fas fa-search"></i>
-                        <span>Pretraži</span>
-                    </button>
+                <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl p-3">
+                    <form action="/proizvodi" method="GET" class="flex flex-col md:flex-row gap-3">
+                        <div class="flex-1 relative">
+                            <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" name="search" placeholder="Pretražite naše proizvode..."
+                                class="w-full pl-12 pr-4 py-4 text-gray-700 outline-none rounded-xl"
+                                value="{{ request('search') }}">
+                        </div>
+                        <button type="submit"
+                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-xl transition flex items-center justify-center space-x-2 font-semibold shadow-lg">
+                            <i class="fas fa-search"></i>
+                            <span>Pretraži</span>
+                        </button>
+                    </form>
                 </div>
 
                 <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
@@ -189,165 +191,119 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach($featuredProducts as $product)
                 <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden relative">
+                    @if($loop->first || $loop->iteration == 3)
                     <span class="badge-new">
-                        <i class="fas fa-fire mr-1"></i>NOVO
+                        <i class="fas fa-fire mr-1"></i>{{ $loop->first ? 'NOVO' : 'AKCIJA' }}
                     </span>
-                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-12 text-center">
-                        <div
-                            class="icon-circle bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-full shadow-lg">
-                            <i class="fas fa-fish"></i>
-                        </div>
+                    @endif
+                    
+                    <div class="p-4">
+                        <img src="{{ asset( "assets".$product->file_path) }}" 
+                             alt="{{ $product->name }}" 
+                             class="product-image">
                     </div>
+                    
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-xl font-bold text-gray-800">Svež losos</h3>
+                            <h3 class="text-xl font-bold text-gray-800">{{ $product->name }}</h3>
                             <span class="flex items-center text-yellow-500 text-sm font-semibold">
-                                <i class="fas fa-star mr-1"></i>4.8
+                                <i class="fas fa-star mr-1"></i>{{ number_format(rand(45, 50) / 10, 1) }}
                             </span>
                         </div>
                         <p class="text-gray-600 mb-4 text-sm flex items-start">
                             <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
-                            Norveški losos premium kvaliteta
+                            {{ $product->description }}
                         </p>
                         <div class="flex items-center justify-between">
-                            <span class="price-tag">1,890 din/kg</span>
-                            <button onclick="addToCart()"
-                                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Dodaj</span>
-                            </button>
+                            <span class="price-tag">{{ number_format($product->price, 0, ',', '.') }} din/kg</span>
+                            <form action="#" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit"
+                                    class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Dodaj</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden relative">
-                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-12 text-center">
-                        <div
-                            class="icon-circle bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-full shadow-lg">
-                            <i class="fas fa-fish"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-xl font-bold text-gray-800">Sveža pastrmka</h3>
-                            <span class="flex items-center text-yellow-500 text-sm font-semibold">
-                                <i class="fas fa-star mr-1"></i>4.6
-                            </span>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
-                            Lokalna slatkovodna pastrmka
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <span class="price-tag">990 din/kg</span>
-                            <button onclick="addToCart()"
-                                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Dodaj</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden relative">
-                    <span class="badge-new">
-                        <i class="fas fa-fire mr-1"></i>AKCIJA
-                    </span>
-                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-12 text-center">
-                        <div
-                            class="icon-circle bg-gradient-to-br from-purple-500 to-pink-500 text-white rounded-full shadow-lg">
-                            <i class="fas fa-fish"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-xl font-bold text-gray-800">Brancin</h3>
-                            <span class="flex items-center text-yellow-500 text-sm font-semibold">
-                                <i class="fas fa-star mr-1"></i>4.7
-                            </span>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
-                            Mediteranski brancin svež
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <span class="price-tag">1,450 din/kg</span>
-                            <button onclick="addToCart()"
-                                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Dodaj</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden relative">
-                    <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-12 text-center">
-                        <div
-                            class="icon-circle bg-gradient-to-br from-orange-500 to-red-500 text-white rounded-full shadow-lg">
-                            <i class="fas fa-shrimp"></i>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <h3 class="text-xl font-bold text-gray-800">Škampi</h3>
-                            <span class="flex items-center text-yellow-500 text-sm font-semibold">
-                                <i class="fas fa-star mr-1"></i>4.9
-                            </span>
-                        </div>
-                        <p class="text-gray-600 mb-4 text-sm flex items-start">
-                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
-                            Sveži jadranski škampi
-                        </p>
-                        <div class="flex items-center justify-between">
-                            <span class="price-tag">2,890 din/kg</span>
-                            <button onclick="addToCart()"
-                                class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span>Dodaj</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
 
-    <!-- All Products -->
+    <!-- All Products Preview -->
     <section id="proizvodi" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
         <div class="container mx-auto px-4">
             <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Svi proizvodi</h2>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Naši proizvodi</h2>
                 <p class="text-gray-600 text-lg">Pronađite savršenu ribu za svaku priliku</p>
             </div>
 
-            <!-- Category Filter -->
-            <div class="flex flex-wrap justify-center gap-4 mb-12">
-                <button onclick="filterCategory('sve', event)"
-                    class="category-btn active px-8 py-3 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 transition shadow-lg font-semibold">
-                    <i class="fas fa-th mr-2"></i>Sve
-                </button>
-                <button onclick="filterCategory('slatkovodno', event)"
-                    class="category-btn px-8 py-3 rounded-full bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition shadow-md font-semibold">
-                    <i class="fas fa-water mr-2"></i>Slatkovodne ribe
-                </button>
-                <button onclick="filterCategory('morsko', event)"
-                    class="category-btn px-8 py-3 rounded-full bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition shadow-md font-semibold">
-                    <i class="fas fa-fish mr-2"></i>Morske ribe
-                </button>
-                <button onclick="filterCategory('skoljke', event)"
-                    class="category-btn px-8 py-3 rounded-full bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition shadow-md font-semibold">
-                    <i class="fas fa-shrimp mr-2"></i>Školjke i rakovi
-                </button>
-                <button onclick="filterCategory('dimljeno', event)"
-                    class="category-btn px-8 py-3 rounded-full bg-white text-gray-700 hover:bg-blue-600 hover:text-white transition shadow-md font-semibold">
-                    <i class="fas fa-fire mr-2"></i>Dimljene ribe
-                </button>
+           
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                @foreach($featuredProducts->take(8) as $product)
+                <div class="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+                    <div class="p-4">
+                        <img src="{{ asset( "assets".$product->file_path) }}" 
+                             alt="{{ $product->name }}" 
+                             class="product-image">
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-sm">
+                                {{ ucfirst($product->category) }}
+                            </span>
+                            <div class="flex items-center gap-1">
+                                <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                                </svg>
+                                <span class="font-bold text-gray-900">{{ number_format(rand(45, 50) / 10, 1) }}</span>
+                            </div>
+                        </div>
+                        
+                        <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                            {{ $product->name }}
+                        </h2>
+                        
+                        <p class="text-sm text-gray-600 mb-6 leading-relaxed">
+                            {{ $product->description }}
+                        </p>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div>
+                                <span class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                                    {{ number_format($product->price, 2) }}
+                                </span>
+                                <span class="text-sm text-gray-500 font-medium ml-1">RSD</span>
+                            </div>
+                            <form action="#" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit"
+                                    class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 group">
+                                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                    </svg>
+                                    Dodaj
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
             </div>
 
-            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-
+            <div class="text-center mt-12">
+                <a href="/proizvodi"
+                    class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-xl transition font-semibold shadow-lg text-lg">
+                    <i class="fas fa-arrow-right mr-2"></i>Pogledajte sve proizvode
+                </a>
             </div>
         </div>
     </section>
@@ -356,37 +312,28 @@
     <section class="py-20 bg-white">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div
-                    class="feature-card text-center p-8 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg">
-                    <div
-                        class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <div class="feature-card text-center p-8 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                         <i class="fas fa-leaf text-3xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-3">Ekološki uzgoj</h3>
-                    <p class="text-gray-600">Sve naše ribe dolaze iz sertifikovanih uzgajališta koja poštuju prirodu i
-                        standarde kvaliteta.</p>
+                    <p class="text-gray-600">Sve naše ribe dolaze iz sertifikovanih uzgajališta koja poštuju prirodu i standarde kvaliteta.</p>
                 </div>
 
-                <div
-                    class="feature-card text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg">
-                    <div
-                        class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <div class="feature-card text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                         <i class="fas fa-clock text-3xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-3">Dnevna dostava</h3>
-                    <p class="text-gray-600">Svakodnevno nabavljamo najsvežije ribe kako bismo vam garantovali vrhunski
-                        kvalitet.</p>
+                    <p class="text-gray-600">Svakodnevno nabavljamo najsvežije ribe kako bismo vam garantovali vrhunski kvalitet.</p>
                 </div>
 
-                <div
-                    class="feature-card text-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-lg">
-                    <div
-                        class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
+                <div class="feature-card text-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-lg">
+                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
                         <i class="fas fa-users text-3xl text-white"></i>
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-3">Stručan tim</h3>
-                    <p class="text-gray-600">Naš tim sa dugogodišnjim iskustvom uvek je tu da vam pomogne u izboru
-                        najbolje ribe.</p>
+                    <p class="text-gray-600">Naš tim sa dugogodišnjim iskustvom uvek je tu da vam pomogne u izboru najbolje ribe.</p>
                 </div>
             </div>
         </div>
@@ -405,14 +352,10 @@
                 </div>
                 <h2 class="text-4xl md:text-5xl font-bold mb-8">O nama</h2>
                 <p class="text-xl mb-6 leading-relaxed text-blue-50">
-                    Ribarnica Tfzr posluje već <strong>15 godina</strong> sa ciljem da vam pruži najsvežije ribe i
-                    morske plodove vrhunskog kvaliteta. Naša ponuda uključuje širok asortiman slatkovodnih i morskih
-                    riba, školjki i rakova.
+                    Ribarnica Tfzr posluje već <strong>15 godina</strong> sa ciljem da vam pruži najsvežije ribe i morske plodove vrhunskog kvaliteta. Naša ponuda uključuje širok asortiman slatkovodnih i morskih riba, školjki i rakova.
                 </p>
                 <p class="text-xl leading-relaxed text-blue-50">
-                    Ponosimo se dugogodišnjom tradicijom i poverenjem naših kupaca. Svaki dan donosimo svež ulov i
-                    garantujemo kvalitet svakog proizvoda. Naša misija je da učinimo ribu dostupnom svima, uz održavanje
-                    najviših standarda kvaliteta.
+                    Ponosimo se dugogodišnjom tradicijom i poverenjem naših kupaca. Svaki dan donosimo svež ulov i garantujemo kvalitet svakog proizvoda. Naša misija je da učinimo ribu dostupnom svima, uz održavanje najviših standarda kvaliteta.
                 </p>
                 <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="glass-effect rounded-xl p-6">
@@ -436,8 +379,6 @@
         </div>
     </section>
 
-
-
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12">
         <div class="container mx-auto px-4">
@@ -456,7 +397,7 @@
                     <h4 class="font-bold mb-4 text-lg">Linkovi</h4>
                     <ul class="space-y-2 text-gray-400">
                         <li><a href="#pocetna" class="hover:text-white transition">Početna</a></li>
-                        <li><a href="#proizvodi" class="hover:text-white transition">Proizvodi</a></li>
+                        <li><a href="/proizvodi" class="hover:text-white transition">Proizvodi</a></li>
                         <li><a href="#o-nama" class="hover:text-white transition">O nama</a></li>
                         <li><a href="#kontakt" class="hover:text-white transition">Kontakt</a></li>
                     </ul>
@@ -474,16 +415,13 @@
                 <div>
                     <h4 class="font-bold mb-4 text-lg">Pratite nas</h4>
                     <div class="flex space-x-4">
-                        <a href="#"
-                            class="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition">
+                        <a href="#" class="w-10 h-10 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center transition">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#"
-                            class="w-10 h-10 bg-pink-600 hover:bg-pink-700 rounded-full flex items-center justify-center transition">
+                        <a href="#" class="w-10 h-10 bg-pink-600 hover:bg-pink-700 rounded-full flex items-center justify-center transition">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#"
-                            class="w-10 h-10 bg-blue-400 hover:bg-blue-500 rounded-full flex items-center justify-center transition">
+                        <a href="#" class="w-10 h-10 bg-blue-400 hover:bg-blue-500 rounded-full flex items-center justify-center transition">
                             <i class="fab fa-twitter"></i>
                         </a>
                     </div>
@@ -496,148 +434,8 @@
         </div>
     </footer>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 relative">
-            <button onclick="closeLogin()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl">
-                <i class="fas fa-times"></i>
-            </button>
-            <div class="text-center mb-8">
-                <div class="inline-block bg-blue-100 p-4 rounded-full mb-4">
-                    <i class="fas fa-user text-blue-600 text-3xl"></i>
-                </div>
-                <h2 class="text-3xl font-bold text-gray-800">Prijava</h2>
-                <p class="text-gray-600 mt-2">Ulogujte se na vaš nalog</p>
-            </div>
-            <form class="space-y-6">
-                <div>
-                    <input type="email" placeholder="Email adresa"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                </div>
-                <div>
-                    <input type="password" placeholder="Lozinka"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
-                </div>
-                <div class="flex items-center justify-between text-sm">
-                    <label class="flex items-center">
-                        <input type="checkbox" class="mr-2">
-                        <span class="text-gray-600">Zapamti me</span>
-                    </label>
-                    <a href="#" class="text-blue-600 hover:text-blue-700">Zaboravili ste lozinku?</a>
-                </div>
-                <button type="submit"
-                    class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl transition font-semibold shadow-lg">
-                    Prijavite se
-                </button>
-                <p class="text-center text-gray-600 text-sm">
-                    Nemate nalog? <a href="#" class="text-blue-600 hover:text-blue-700 font-semibold">Registrujte se</a>
-                </p>
-            </form>
-        </div>
-    </div>
     <script>
-        let cartCount = 0;
 
-        const products = @json($products);
-        console.log(products);
-        const productsGrid = document.getElementById('productsGrid');
-
-        function capitalizeFirstLetter(string) {
-            return string.charAt(0).toUpperCase() + string.slice(1);
-        }
-
-        function renderProducts(productsList) {
-            productsGrid.innerHTML = '';
-
-            productsList.forEach(product => {
-                const productHTML = `
-        <div class="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 p-6">
-            <!-- Kategorija -->
-            <div class="flex items-center justify-between mb-4">
-                <span class="px-3 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r ${product.gradient} text-white shadow-sm">
-                    ${capitalizeFirstLetter(product.category)}
-                </span>
-                <div class="flex items-center gap-1">
-                    <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                    </svg>
-                    <span class="font-bold text-gray-900">${product.rating}</span>
-                </div>
-            </div>
-            
-            <!-- Naziv proizvoda -->
-            <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                ${product.name}
-            </h2>
-            
-            <!-- Opis -->
-            <p class="text-sm text-gray-600 mb-6 leading-relaxed">
-                ${product.description}
-            </p>
-            
-            <!-- Cena i dugme -->
-            <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div>
-                    <span class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                        ${Number(product.price).toFixed(2)}
-                    </span>
-                    <span class="text-sm text-gray-500 font-medium ml-1">RSD</span>
-                </div>
-                <button 
-                    onclick="addToCart(${product.id})" 
-                    class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 group"
-                >
-                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                    Dodaj
-                </button>
-            </div>
-        </div>
-        `;
-                productsGrid.innerHTML += productHTML;
-            });
-        }
-
-        // Filter by category
-        function filterCategory(category, event) {
-            const buttons = document.querySelectorAll('.category-btn');
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
-                btn.classList.add('bg-white', 'text-gray-700');
-            });
-
-            if (event) {
-                event.target.classList.add('bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'text-white');
-                event.target.classList.remove('bg-white', 'text-gray-700');
-            }
-
-            const filteredProducts = category === 'sve' ? products : products.filter(p => p.category === category);
-            renderProducts(filteredProducts);
-        }
-
-        // Search products
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filteredProducts = products.filter(p => p.name.toLowerCase().includes(searchTerm));
-            renderProducts(filteredProducts);
-        }
-
-        // Add to cart
-        function addToCart() {
-            cartCount++;
-            const cartCountElement = document.getElementById('cartCount');
-            cartCountElement.textContent = cartCount;
-            cartCountElement.classList.remove('hidden');
-
-            // Animation effect
-            cartCountElement.classList.add('animate-bounce');
-            setTimeout(() => {
-                cartCountElement.classList.remove('animate-bounce');
-            }, 500);
-        }
-
-        // Toggle mobile menu
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
             const icon = document.getElementById('menuIcon');
@@ -646,16 +444,6 @@
             icon.classList.toggle('fa-times');
         }
 
-        // Login modal
-        function openLogin() {
-            document.getElementById('loginModal').classList.remove('hidden');
-        }
-
-        function closeLogin() {
-            document.getElementById('loginModal').classList.add('hidden');
-        }
-
-        // Scroll effect for header
         window.addEventListener('scroll', () => {
             const header = document.getElementById('mainHeader');
             if (window.scrollY > 100) {
@@ -663,11 +451,6 @@
             } else {
                 header.classList.remove('shadow-2xl');
             }
-        });
-
-        // Initialize products on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            renderProducts(products);
         });
     </script>
 

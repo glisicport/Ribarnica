@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    @include('common.topbar')
+    <h2>o nama test</h2>
 </body>
 </html>

@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    @include('common.topbar')
+    cao
 </body>
 </html>
