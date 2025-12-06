@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ribeSeeder extends Seeder
+class ambijentSeeder extends Seeder
 {
     public function run(): void
     {
@@ -14,7 +14,7 @@ class ribeSeeder extends Seeder
           
         ];
         foreach ($ribe as $product) {
-            DB::table('ribe')->insert([
+            DB::table('ambijent')->insert([
                 'naziv' => $product['naziv'],
                 'slika' => $product['slika'],
                 'opis' => $product['opis'],
