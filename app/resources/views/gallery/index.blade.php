@@ -115,7 +115,7 @@ h1, h2 {
                     <div class="relative w-full max-w-5xl mb-8 group">
                         <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 rounded-3xl blur-2xl opacity-25 group-hover:opacity-50 transition duration-500"></div>
                         <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-4 ring-white/50">
-                            <img src="{{ asset('images/ambijent/'.$image) }}" alt="{{ $title }}" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110">
+                            <img src="{{ asset($image) }}" alt="{{ $title }}" class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                             <div class="absolute top-4 left-4 w-12 h-12 border-t-4 border-l-4 border-cyan-400 rounded-tl-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <div class="absolute bottom-4 right-4 w-12 h-12 border-b-4 border-r-4 border-cyan-400 rounded-br-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>

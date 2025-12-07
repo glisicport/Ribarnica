@@ -13,6 +13,7 @@ use App\Http\Controllers\OnamaController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
 
+
 // ==========================================
 // PUBLIC ROUTES
 // ==========================================
@@ -58,5 +59,12 @@ Route::middleware(\App\Http\Middleware\Authenticate::class )->group(function () 
         
         // Kategorije (all CRUD operations)
         Route::resource('categories', AdminCategoryController::class)->except(['show', 'index', 'create', 'edit']);
+
+        Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class);
+
+        Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class)->except(['show', 'create', 'edit']);
+
+
+        
     });
 });
