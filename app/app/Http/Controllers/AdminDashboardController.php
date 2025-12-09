@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\about_us;
 
 class AdminDashboardController extends Controller
 {
@@ -46,7 +47,9 @@ class AdminDashboardController extends Controller
 
     $allCategories = ProductCategory::orderBy('name')->get();
 
-    return view("admin.index", compact('page', 'products', 'categories', 'allCategories'));
+    $about = about_us::first();
+
+    return view("admin.index", compact('page', 'products', 'categories', 'allCategories','about'));
 }
 
 

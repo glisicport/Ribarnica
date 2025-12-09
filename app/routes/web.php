@@ -12,6 +12,7 @@ use App\Http\Controllers\Gallery;
 use App\Http\Controllers\OnamaController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminAboutUsController;
 
 
 // ==========================================
@@ -63,6 +64,9 @@ Route::middleware(\App\Http\Middleware\Authenticate::class )->group(function () 
         Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class);
 
         Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class)->except(['show', 'create', 'edit']);
+
+           Route::get('/about', [AdminAboutUsController::class, 'index'])->name('about');
+        Route::put('/about', [AdminAboutUsController::class, 'update'])->name('about.update');
 
 
         
