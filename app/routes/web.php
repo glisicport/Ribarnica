@@ -12,8 +12,10 @@ use App\Http\Controllers\Gallery;
 use App\Http\Controllers\OnamaController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\AdminAboutUsController;
-
+use App\Http\Controllers\AdminGalleryController;
 
 // ==========================================
 // PUBLIC ROUTES
@@ -38,37 +40,61 @@ Route::get('/Galerija', [Gallery::class, 'index'])->name('galerija');
 // ==========================================
 // AUTHENTICATED ROUTES
 // ==========================================
-
 Route::middleware(\App\Http\Middleware\Authenticate::class )->group(function () {
     
     // Odjava
     Route::post('/odjava', [AdminDashboardController::class, 'logout'])->name('odjava');
 
-    // Admin Dashboard (Unified dashboard with products and categories)
+    // Admin Dashboard
     Route::get('/kontrolni-panel', [AdminDashboardController::class, 'index'])->name('kontrolni-panel');
 
     // Korisnički nalog
     Route::get('/korisnicki-nalog', [UserDashboardController::class, 'index'])->name('korisnicki-nalog');
     
     // ==========================================
-    // ADMIN - PROIZVODI & KATEGORIJE (CRUD)
+    // ADMIN - PROIZVODI, KATEGORIJE, ZAPOSLENI, O NAMA
     // ==========================================
     Route::prefix('admin')->name('admin.')->group(function () {
         
-        // Proizvodi (all CRUD operations)
+        // Proizvodi
         Route::resource('products', AdminProductController::class)->except(['show', 'index', 'create', 'edit']);
         
-        // Kategorije (all CRUD operations)
+        // Kategorije
         Route::resource('categories', AdminCategoryController::class)->except(['show', 'index', 'create', 'edit']);
 
-        Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class);
-
+        // Zaposleni
         Route::resource('employees', App\Http\Controllers\AdminEmployeeController::class)->except(['show', 'create', 'edit']);
 
-           Route::get('/about', [AdminAboutUsController::class, 'index'])->name('about');
+        // O NAMA
+        Route::get('/about', [AdminAboutUsController::class, 'index'])->name('about');
         Route::put('/about', [AdminAboutUsController::class, 'update'])->name('about.update');
 
+        // ==========================================
+        // ADMIN – GALERIJA (CRUD)
+        // ==========================================
+        Route::get('/gallery', [AdminGalleryController::class, 'index'])->name('gallery.index');
+        Route::post('/gallery', [AdminGalleryController::class, 'store'])->name('gallery.store');
+        Route::put('/gallery/update/{fileName}', [AdminGalleryController::class, 'update'])->name('gallery.update');
+        Route::delete('/gallery/delete/{fileName}', [AdminGalleryController::class, 'destroy'])->name('gallery.delete');
 
-        
+        // NOVA RUTA: Rename slike
+        Route::put('/gallery/rename/{fileName}', [AdminGalleryController::class, 'rename'])->name('gallery.rename');
+
     });
 });
+
+// ==========================================
+// ROUTE ZA SERVIRANJE SLIKA IZ FOLDERA
+// ==========================================
+Route::get('gallery-image/{filename}', function ($filename) {
+    $path = storage_path('app/public/images/ambijent/' . $filename);
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+
+    $file = File::get($path);
+    $type = File::mimeType($path);
+
+    return Response::make($file, 200)->header("Content-Type", $type);
+})->where('filename', '.*');
