@@ -9,16 +9,21 @@ class ContactSeeder extends Seeder
 {
     public function run(): void
     {
-        $contact = [
-       ['name' => 'TFZR RIBARNICA', 'email' =>' TFZRRIBARNICA@gmail.com', 'phone' => '+381 61 2345678', 'message' => 'Dobrodosli u nasu ribarnicu'],
+        $contacts = [
+            [
+                'name'    => 'TFZR RIBARNICA',
+                'email'   => 'TFZRRIBARNICA@gmail.com',
+                'phone'   => '+381 61 2345678',
+                'message' => 'Dobrodosli u nasu ribarnicu',
+            ],
         ];
-        foreach ($contact as $product) {
-            DB::table('products')->insert([
-                'name' => $product['name'],
-                'email' => $product['email'],
-                'phone' => $product['phone'],
-                'message' => $product['message'],
-                
+
+        foreach ($contacts as $contact) {
+            DB::table('contact')->insert([
+                'name'       => $contact['name'],
+                'email'      => $contact['email'],
+                'phone'      => $contact['phone'],
+                'message'    => $contact['message'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

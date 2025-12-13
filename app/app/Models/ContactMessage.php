@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactMessage extends Model
 {
-    protected $fillable=["username","message","comment"];
-     public function Contact() {
-        return $this->hasOne(Contact::class);
-    }
+    // pošto je tabela 'contact_message', a ne 'contact_messages'
+    protected $table = 'contact_message';
+
+    protected $fillable = [
+        'username',
+        'message',
+        'comment',
+    ];
 }
