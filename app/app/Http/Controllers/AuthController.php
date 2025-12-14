@@ -88,6 +88,16 @@ class AuthController extends Controller
         return redirect()->intended('/korisnicki-nalog')
             ->with('status', 'Uspešno ste se registrovali i prijavili!');
     }
+    public function logout(Request $request)
+{
+    Auth::logout();
+
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('prijava')
+        ->with('status', 'Uspešno ste se odjavili.');
+}
 
     public function update(Request $request)
     {

@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactInfo;
+use App\Models\ContactMessage;
+use App\Models\Faq;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\QuickFact;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\about_us;
@@ -12,8 +16,25 @@ class AdminDashboardController extends Controller
 {
     public function index(Request $request)
 {
-    $page = $request->query('page_type', 'products');
+    $currentPage  = $request->query('page_type', 'products');
+     $items = collect();
+        $questions = null;
 
+        switch ($currentPage) {
+            case 'faq':
+                $items = Faq::orderBy('order')->orderBy('id')->paginate(10);
+                break;
+            case 'quick-facts':
+                $items = QuickFact::orderBy('order')->orderBy('id')->paginate(10);
+                break;
+            case 'poruke':
+                $questions = ContactMessage::orderByDesc('created_at')->paginate(6);
+                break;
+            case 'contact_info':
+                $items = ContactInfo::first();
+                break;
+        
+        }
 
     $productsQuery = Product::with('category');
 
@@ -49,10 +70,132 @@ class AdminDashboardController extends Controller
 
     $about = about_us::first();
 
-    return view("admin.index", compact('page', 'products', 'categories', 'allCategories','about'));
+    return view("admin.index", compact('currentPage', 'products','items','questions', 'categories', 'allCategories','about'));
 }
 
+ public function store(Request $request, $resource)
+    {
+        switch ($resource) {
+            case 'faq':
+                $request->validate([
+                    'question'  => 'required|string|max:255',
+                    'answer'    => 'required|string',
+                    'order'     => 'nullable|integer',
+                    'is_active' => 'nullable|boolean',
+                ]);
 
+                Faq::create([
+                    'question'  => $request->question,
+                    'answer'    => $request->answer,
+                    'order'     => $request->order ?? 0,
+                    'is_active' => $request->has('is_active'),
+                ]);
+                break;
+
+            case 'quick-facts':
+                $request->validate([
+                    'text'      => 'required|string|max:500',
+                    'order'     => 'nullable|integer',
+                    'is_active' => 'nullable|boolean',
+                ]);
+
+                QuickFact::create([
+                    'text'      => $request->text,
+                    'order'     => $request->order ?? 0,
+                    'is_active' => $request->has('is_active'),
+                ]);
+                break;
+
+            default:
+                abort(404);
+        }
+
+        return redirect()->route('kontrolni-panel', ['page_type' => $resource])
+                         ->with('status', ucfirst($resource) . ' uspešno dodat!');
+    }
+
+    public function update(Request $request, $resource, $id)
+    {
+        switch ($resource) {
+            case 'faq':
+                $item = Faq::findOrFail($id);
+                $request->validate([
+                    'question'  => 'required|string|max:255',
+                    'answer'    => 'required|string',
+                    'order'     => 'nullable|integer',
+                    'is_active' => 'nullable|boolean',
+                ]);
+                $item->update([
+                    'question'  => $request->question,
+                    'answer'    => $request->answer,
+                    'order'     => $request->order ?? 0,
+                    'is_active' => $request->has('is_active'),
+                ]);
+                break;
+
+            case 'quick-facts':
+                $item = QuickFact::findOrFail($id);
+                $request->validate([
+                    'text'      => 'required|string|max:500',
+                    'order'     => 'nullable|integer',
+                    'is_active' => 'nullable|boolean',
+                ]);
+                $item->update([
+                    'text'      => $request->text,
+                    'order'     => $request->order ?? 0,
+                    'is_active' => $request->has('is_active'),
+                ]);
+                break;
+
+            case 'questions':
+                $item = ContactMessage::findOrFail($id);
+                $request->validate(['comment' => 'nullable|string']);
+                $item->update(['comment' => $request->comment]);
+                break;
+
+            case 'contact_info':
+                $item = ContactInfo::findOrFail($id);
+                $request->validate([
+                    'title'       => 'required|string|max:255',
+                    'subtitle'    => 'nullable|string|max:255',
+                    'phone_label' => 'nullable|string|max:50',
+                    'phone_value' => 'nullable|string|max:50',
+                    'email_label' => 'nullable|string|max:50',
+                    'email_value' => 'nullable|string|max:50',
+                    'hours_label' => 'nullable|string|max:50',
+                    'hours_value' => 'nullable|string',
+                ]);
+                $item->update($request->only([
+                    'title', 'subtitle', 'phone_label', 'phone_value',
+                    'email_label', 'email_value', 'hours_label', 'hours_value'
+                ]));
+                break;
+
+            default:
+                abort(404);
+        }
+
+        return redirect()->route('kontrolni-panel', ['page_type' => $resource])
+                         ->with('status', ucfirst($resource) . ' uspešno izmenjen!');
+    }   public function destroy(Request $request, $resource, $id)
+    {
+        switch ($resource) {
+            case 'faq':
+                Faq::findOrFail($id)->delete();
+                break;
+            case 'quick-facts':
+                QuickFact::findOrFail($id)->delete();
+                break;
+            case 'questions':
+                ContactMessage::findOrFail($id)->delete();
+                break;
+            default:
+                abort(404);
+        }
+
+        return redirect()->route('kontrolni-panel', ['page_type' => $resource])
+                         ->with('status', ucfirst($resource) . ' je obrisan.');
+    }
     public function logout(Request $request)
     {
         Auth::logout();

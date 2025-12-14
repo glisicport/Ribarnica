@@ -6,12 +6,58 @@
     <title>Korpa</title>
     @include('common.scripts')
     <link href="{{ asset('assets/css/admin/products.css') }}" rel="stylesheet"/>
-    <!-- Ako koristiš Tailwind, ovo već treba da radi; dodatne stilove možeš staviti u products.css -->
 </head>
 <body class="bg-gray-50 min-h-screen text-gray-800">
 
     @include('common.topbar')
 
+{{-- Success Popup --}}
+@if(session('success'))
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <p class="text-green-700 font-semibold text-lg">{{ session('success') }}</p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
+
+{{-- Error Popup --}}
+@if($errors->any())
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <p class="text-red-700 font-semibold text-lg">
+            @foreach($errors->all() as $error)
+                {{ $error }}<br>
+            @endforeach
+        </p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
     <div class="max-w-6xl mx-auto mt-10 px-4 md:px-6 lg:px-8">
 
         <h1 class="text-3xl md:text-4xl font-extrabold mb-8 text-center">Vaša korpa</h1>
@@ -53,7 +99,9 @@
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit" name="action" value="decrease" class="px-2 py-1 rounded-md border hover:bg-gray-100">-</button>
-                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" class="w-16 text-center px-2 py-1 rounded-md border" />
+
+                                        <input type="number" name="quantity" value="{{ $item->quantity }}" min="0.1" step="0.1" class="w-16 text-center px-2 py-1 rounded-md border" />
+
                                         <button type="submit" name="action" value="increase" class="px-2 py-1 rounded-md border hover:bg-gray-100">+</button>
                                     </form>
 
@@ -106,7 +154,9 @@
                         <div class="border-t pt-3 mt-3">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="text-sm text-gray-600">Ukupno</div>
-                                <div class="text-lg font-bold">{{ number_format($cart->items->sum(fn($i) => $i->quantity * $i->price), 2) }} RSD</div>
+                                <div class="text-lg font-bold">
+                                    {{ $cart ? number_format($cart->items->sum(fn($i) => $i->quantity * $i->price), 2) : '0.00' }} RSD
+                                </div>
                             </div>
 
                             <!-- Checkout dugme: otvara modal -->
@@ -199,7 +249,7 @@
                         <div class="flex items-center justify-between gap-3">
                             <button type="button" id="cancelBtn" class="px-4 py-2 rounded-lg border hover:bg-gray-50">Nazad</button>
 
-                            <!-- U formu uključujemo i sadrzaj kosare (možeš poslati kao hidden polja) -->
+                            <!-- U formu uključujemo i sadrzaj kosare (pošalji broj bez formatiranja) -->
                             <input type="hidden" name="total" value="{{ $cart ? $cart->items->sum(fn($i) => $i->quantity * $i->price) : 0 }}">
 
                             <button type="submit" class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Potvrdi i plati</button>
@@ -231,12 +281,16 @@
                                         <div class="text-sm font-medium">{{ number_format($item->quantity * $item->price, 2) }} RSD</div>
                                     </div>
                                 @endforeach
+                            @else
+                                <div class="text-sm text-gray-500">Nema artikala u korpi.</div>
                             @endif
                         </div>
 
                         <div class="border-t mt-4 pt-3 flex items-center justify-between">
                             <div class="text-sm text-gray-600">Ukupno</div>
-                            <div class="text-lg font-bold">{{ number_format($cart->items->sum(fn($i) => $i->quantity * $i->price), 2) }} RSD</div>
+                            <div class="text-lg font-bold">
+                                {{ $cart ? number_format($cart->items->sum(fn($i) => $i->quantity * $i->price), 2) : '0.00' }} RSD
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -244,6 +298,7 @@
             </div>
         </div>
     </div>
+<script src="//unpkg.com/alpinejs" defer></script>
 
 <script>
     // Komentari na srpskom radi lakšeg održavanja

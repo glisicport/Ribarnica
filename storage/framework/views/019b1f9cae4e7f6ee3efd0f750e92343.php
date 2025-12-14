@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kontrolni Panel</title>
+    <title><?php echo $__env->yieldContent('title', 'Kontrolni Panel'); ?></title>
 
-
-  
     <?php echo $__env->make('common.scripts', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-      <script>
+
+    <script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -28,67 +27,69 @@
             }
         }
     </script>
-<link href="<?php echo e(asset('assets/css/admin/dashboard.css')); ?>" rel="stylesheet"/>
+
+    <link href="<?php echo e(asset('assets/css/admin/dashboard.css')); ?>" rel="stylesheet"/>
 </head>
 
 <body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-100 selection:text-brand-900">
 
-    <input type="checkbox" id="sidebar-toggle" class="hidden">
-    <label for="sidebar-toggle" class="overlay hidden fixed inset-0 bg-slate-900/50 z-40 lg:hidden transition-opacity cursor-pointer"></label>
+<input type="checkbox" id="sidebar-toggle" class="hidden">
+<label for="sidebar-toggle"
+       class="overlay hidden fixed inset-0 bg-slate-900/50 z-40 lg:hidden transition-opacity cursor-pointer"></label>
 
-    <div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden">
+    <?php echo $__env->make('common.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        <?php echo $__env->make('common.sidebar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+    <main class="flex-1 flex flex-col overflow-y-auto bg-slate-50">
+        <?php echo $__env->make('common.admin_topbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50">
-            
-           <?php echo $__env->make('common.admin_topbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-           
-           <!-- Main Content Area -->
-           <div class="flex-1 overflow-y-auto bg-slate-50 p-6 lg:p-8">
-               
+        <div class="p-6 flex-1 min-h-[calc(100vh-4rem)]">
+            <!-- Dynamic Content Based on currentPage Type -->
+            <?php if($currentPage === 'products' || empty($currentPage)): ?>
+                <?php echo $__env->make('admin.products.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'gallery'): ?>
+                <?php echo $__env->make('admin.gallery.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'about'): ?>
+                <?php echo $__env->make('admin.about_us.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'employees'): ?>
+                <?php echo $__env->make('admin.employees.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'settings'): ?>
+                <?php echo $__env->make('admin.settings.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'orders'): ?>
+                <?php echo $__env->make('admin.orders.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'faq'): ?>
+                <?php echo $__env->make('admin.contact.partials.faq_table', [
+                    'items' => $items ?? []
+                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'quick-facts'): ?>
+                <?php echo $__env->make('admin.contact.partials.quick_facts_table', [
+                    'items' => $items ?? []
+                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'poruke'): ?>
+                <?php echo $__env->make('admin.contact.partials.questions_table', [
+                    'questions' => $questions ?? []
+                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php elseif($currentPage === 'contact_info'): ?>
+                <?php echo $__env->make('admin.contact.partials.contact_info_table', [
+                    'items' => $items ?? []
+                ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+            <?php else: ?>
+                <p class="text-sm text-slate-500">
+                    Izabrani panel ne postoji.
+                </p>
+            <?php endif; ?>
+        </div>
+    </main>
+</div>
 
-               <!-- Dynamic Content Based on Page Type -->
-               <?php if($page === 'products' || empty($page)): ?>
-                   <?php echo $__env->make('admin.products.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php elseif($page === 'gallery'): ?>
-                   <?php echo $__env->make('admin.gallery.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php elseif($page === 'about'): ?>
-                   <?php echo $__env->make('admin.about_us.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php elseif($page === 'employees'): ?>
-                   <?php echo $__env->make('admin.employees.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php elseif($page === 'settings'): ?>
-                   <?php echo $__env->make('admin.settings.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php elseif($page === 'orders'): ?>
-                   <?php echo $__env->make('admin.orders.index', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
-               <?php endif; ?>
-           </div>
-        </main>
-    </div>
-
-
- 
-
-    <script>
-        // Tab switching
-        function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            
-            // Show selected tab
-            document.getElementById(tabName + '-tab').classList.remove('hidden');
-
-            // Update button states
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('tab-active');
-                btn.classList.add('tab-inactive');
-            });
-            event.target.closest('.tab-btn').classList.remove('tab-inactive');
-        event.target.closest('.tab-btn').classList.add('tab-active');
-        }
-
-       
-    </script>
+<script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+    });
+    event.target.closest('.tab-btn').classList.remove('tab-inactive');
+    event.target.closest('.tab-btn').classList.add('tab-active');
+</script>
 
 </body>
 </html>

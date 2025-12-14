@@ -29,7 +29,7 @@
                     <i class="fas fa-info-circle"></i>
                     <span>O nama</span>
                 </a>
-                <a href="/kontakt" class="hover:text-blue-200 transition flex items-center space-x-2">
+                <a href="/contact" class="hover:text-blue-200 transition flex items-center space-x-2">
                     <i class="fas fa-envelope"></i>
                     <span>Kontakt</span>
                 </a>

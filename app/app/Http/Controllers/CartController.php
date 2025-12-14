@@ -19,9 +19,8 @@ class CartController extends Controller
     {
         $product = Product::findOrFail($productId);
 
-        $quantity = $request->input('quantity', 1); // default 1 kg
+        $quantity = $request->input('quantity', 1); 
 
-        // Check if product has enough stock
         if ($product->stock < $quantity) {
             return redirect()->back()->withErrors(['error' => "Nedovoljno zalihe! Dostupno je samo {$product->stock} kg."]);
         }
@@ -35,7 +34,6 @@ class CartController extends Controller
             ->first();
 
         if ($item) {
-            // Check if adding quantity would exceed stock
             $totalQuantity = $item->quantity + $quantity;
             if ($product->stock < $totalQuantity) {
                 return redirect()->back()->withErrors(['error' => "Nedovoljno zalihe! Dostupno je samo {$product->stock} kg."]);
@@ -87,9 +85,9 @@ class CartController extends Controller
         $newQuantity = $item->quantity;
 
         if ($action === 'decrease') {
-            $newQuantity = max(1, $item->quantity - 1);
+            $newQuantity = max(1, $item->quantity - 0.1);
         } elseif ($action === 'increase') {
-            $newQuantity = $item->quantity + 1;
+            $newQuantity = $item->quantity + 0.1;
         } else {
             $newQuantity = max(1, (int)$quantity);
         }

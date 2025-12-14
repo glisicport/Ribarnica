@@ -67,7 +67,7 @@ class HomeController extends Controller
         } else {
             // User is not logged in - get random products
             $recommendedProducts = Product::inRandomOrder()
-                ->limit(10)
+                ->limit(4)
                 ->get();
         }
 

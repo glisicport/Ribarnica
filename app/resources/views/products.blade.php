@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sr">
 
@@ -49,6 +50,53 @@
 
     @include('common.topbar')
 
+{{-- Success Popup --}}
+@if(session('success'))
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <p class="text-green-700 font-semibold text-lg">{{ session('success') }}</p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
+
+{{-- Error Popup --}}
+@if($errors->any())
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <p class="text-red-700 font-semibold text-lg">
+            @foreach($errors->all() as $error)
+                {{ $error }}<br>
+            @endforeach
+        </p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
 
     <div class="container mx-auto px-4 py-8 lg:py-12">
         <div class="flex flex-col lg:flex-row gap-8 items-start">

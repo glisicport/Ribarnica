@@ -259,36 +259,7 @@
     </section>
 
 
-    <!-- Features Section -->
-    <section class="py-20 bg-white">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="feature-card text-center p-8 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl shadow-lg">
-                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-                        <i class="fas fa-leaf text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Ekološki uzgoj</h3>
-                    <p class="text-gray-600">Sve naše ribe dolaze iz sertifikovanih uzgajališta koja poštuju prirodu i standarde kvaliteta.</p>
-                </div>
 
-                <div class="feature-card text-center p-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-                        <i class="fas fa-clock text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Dnevna dostava</h3>
-                    <p class="text-gray-600">Svakodnevno nabavljamo najsvežije ribe kako bismo vam garantovali vrhunski kvalitet.</p>
-                </div>
-
-                <div class="feature-card text-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl shadow-lg">
-                    <div class="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-xl">
-                        <i class="fas fa-users text-3xl text-white"></i>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-3">Stručan tim</h3>
-                    <p class="text-gray-600">Naš tim sa dugogodišnjim iskustvom uvek je tu da vam pomogne u izboru najbolje ribe.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- About Section -->
     <section id="o-nama" class="py-20 bg-gradient-to-br from-blue-600 to-cyan-600 text-white relative overflow-hidden">
@@ -386,7 +357,6 @@
     </footer>
 
     <script>
-        let cartCount = {{ session('cart_count', 0) }};
 
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
