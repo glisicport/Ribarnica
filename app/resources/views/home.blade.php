@@ -435,7 +435,6 @@
     </footer>
 
     <script>
-        let cartCount = {{ session('cart_count', 0) }};
 
         function toggleMenu() {
             const menu = document.getElementById('mobileMenu');
