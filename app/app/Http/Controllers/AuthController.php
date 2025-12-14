@@ -50,6 +50,45 @@ class AuthController extends Controller
 }
 
 
+    public function registerShow()
+    {
+        if (Auth::check()) {
+            return redirect()->intended('/');
+        }
+
+        return view('prijava.register');
+    }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'min:8', 'confirmed'],
+        ], [
+            'name.required' => 'Polje Ime i prezime je obavezno.',
+            'name.max' => 'Ime i prezime ne smeju biti duži od 255 karaktera.',
+            'email.required' => 'Polje E-mail adresa je obavezno.',
+            'email.email' => 'Unesite validnu e-mail adresu.',
+            'email.unique' => 'Ova e-mail adresa je već registrovana.',
+            'password.required' => 'Polje Lozinka je obavezno.',
+            'password.min' => 'Lozinka mora imati najmanje 8 karaktera.',
+            'password.confirmed' => 'Potvrda lozinke se ne podudara.',
+        ]);
+
+        $user = \App\Models\User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => 'user',
+        ]);
+
+        Auth::login($user);
+
+        return redirect()->intended('/korisnicki-nalog')
+            ->with('status', 'Uspešno ste se registrovali i prijavili!');
+    }
+
     public function update(Request $request)
     {
         if (!Auth::check()) {

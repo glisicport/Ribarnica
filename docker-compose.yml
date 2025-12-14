@@ -10,6 +10,7 @@ services:
       - ./app:/var/www/html
       - /var/www/html/vendor  
       - /var/www/html/node_modules  
+      - ./storage:/var/www/html/storage
     ports:
       - "8000:8000"
     depends_on:
@@ -33,6 +34,7 @@ services:
       - ribarnica-network
 
 volumes:
+  storage_data:
   db_data:
 
 networks:

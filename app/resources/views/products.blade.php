@@ -223,14 +223,44 @@
                                             <span class="text-xs text-gray-500 font-medium">RSD/kg</span>
                                         </div>
 
-                                        <form action="#" method="POST">
-                                            @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button
-                                                class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
-                                                <i class="fas fa-shopping-cart"></i>
-                                            </button>
-                                        </form>
+                                           <!-- Button to open modal -->
+                                    <div x-data="{ open: false, productId: null, quantity: 1 }" x-cloak>
+    <!-- Dugme za otvaranje modala -->
+    <button
+        @click="open = true; productId = {{ $product->id }};"
+        class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
+        <i class="fas fa-shopping-cart"></i>
+    </button>
+
+    <!-- Modal -->
+    <div
+        x-show="open"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        style="display: none;"  <!-- ovo je za Alpine.js -->
+    >
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-xl font-bold mb-4">Dodaj proizvod u korpu</h2>
+
+            <form :action="`/cart/add/${productId}`" method="POST">
+                @csrf
+                <label class="block mb-2 font-medium">Koliko kilograma želite?</label>
+                <input type="number" name="quantity" x-model="quantity" min="0.1" step="0.1"
+                       class="w-full border rounded px-3 py-2 mb-4" required>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" @click="open = false"
+                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Otkaži</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Dodaj u korpu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -263,6 +293,7 @@
             <p class="text-gray-500 text-sm">&copy; {{ date('Y') }} Ribarnica Tfzr. Sva prava zadržana.</p>
         </div>
     </footer>
+<script src="//unpkg.com/alpinejs" defer></script>
 
 </body>
 

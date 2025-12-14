@@ -94,60 +94,70 @@
             </form>
         </div>
 
-        <div id="products-card-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            @foreach($products as $product)
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition duration-300">
-                    <div class="flex flex-col md:flex-row h-auto md:h-64">
-                        <div class="w-full md:w-1/2 bg-gray-100 flex-shrink-0">
-                            @if($product->file_path)
-                                <img src="{{ asset('storage/' . $product->file_path) }}" alt="{{ $product->name }}"
-                                    class="w-full h-full object-cover">
-                            @else
-                                <div class="flex items-center justify-center h-full text-gray-400 w-full md:h-64">
-                                    <i class="fas fa-image fa-3x"></i>
-                                </div>
-                            @endif
+ <div id="products-card-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"> 
+    @foreach($products as $product)
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-2xl transition duration-300">
+            <div class="flex flex-col md:flex-row h-auto md:h-64">
+                <div class="w-full md:w-1/2 bg-gray-100 flex-shrink-0">
+                    @if($product->file_path)
+                        <img src="{{ asset('storage/' . $product->file_path) }}" alt="{{ $product->name }}"
+                            class="w-full h-full object-cover">
+                    @else
+                        <div class="flex items-center justify-center h-full text-gray-400 w-full md:h-64">
+                            <i class="fas fa-image fa-3x"></i>
                         </div>
+                    @endif
+                </div>
 
-                        <div class="w-full md:w-1/2 p-6 flex flex-col justify-between">
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">{{ $product->name }}</h3>
-                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $product->description ?? 'Nema dostupnog opisa' }}</p>
-                                <div class="flex items-center gap-4 mb-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                                        <i class="fas fa-tag fa-fw mr-1"></i>
-                                        {{ $product->category->name ?? 'N/A' }}
-                                    </span>
-                                    <p class="text-2xl font-extrabold text-brand-600">
-                                        {{ number_format($product->price, 2) }} <span class="text-sm font-semibold">дин.</span>
-                                    </p>
-                                </div>
-                            </div>
+                <div class="w-full md:w-1/2 p-6 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ $product->name }}</h3>
+                        <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ $product->description ?? 'Nema dostupnog opisa' }}</p>
+                        <div class="flex items-center gap-4 mb-4 flex-wrap">
+                            <!-- Kategorija -->
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                <i class="fas fa-tag fa-fw mr-1"></i>
+                                {{ $product->category->name ?? 'N/A' }}
+                            </span>
 
-                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
-                                <button
-                                    onclick="editProduct({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ addslashes($product->description ?? '') }}', {{ $product->product_categories_id }})"
-                                    class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
-                                    title="Izmeni">
-                                    <i class="fas fa-edit"></i>
-                                </button>
+                            <!-- Stock / Stanje -->
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {{ $product->stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                <i class="fas fa-box fa-fw mr-1"></i>
+                                {{ $product->stock > 0 ? $product->stock . 'kg na stanju' : 'Nema na stanju' }}
+                            </span>
 
-                                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline"
-                                    onsubmit="return confirm('Da li ste sigurni da želite da obrišete proizvod {{ addslashes($product->name) }}?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="inline-flex items-center justify-center w-10 h-10 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors"
-                                        title="Obriši">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
+                            <!-- Cena -->
+                            <p class="text-2xl font-extrabold text-brand-600">
+                                {{ number_format($product->price, 2) }} <span class="text-sm font-semibold">din.</span>
+                            </p>
                         </div>
                     </div>
+
+                    <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                        <button
+                            onclick="editProduct({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ addslashes($product->description ?? '') }}', {{ $product->product_categories_id }}, {{ $product->stock }}, '{{ $product->file_path ?? '' }}')"
+                            class="inline-flex items-center justify-center w-10 h-10 bg-blue-50 text-blue-600 rounded-full hover:bg-blue-100 transition-colors"
+                            title="Izmeni">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST" class="inline"
+                            onsubmit="return confirm('Da li ste sigurni da želite da obrišete proizvod {{ addslashes($product->name) }}?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="inline-flex items-center justify-center w-10 h-10 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors"
+                                title="Obriši">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            @endforeach
+            </div>
         </div>
+    @endforeach
+</div>
+
 
         <div class="flex justify-center items-center mt-8 p-4 bg-white rounded-xl shadow-md border border-gray-100">
             <nav class="flex items-center space-x-1">

@@ -59,6 +59,8 @@
                    @include('admin.employees.index')
                @elseif($page === 'settings')
                    @include('admin.settings.index')
+               @elseif($page === 'orders')
+                   @include('admin.orders.index')
                @endif
            </div>
         </main>

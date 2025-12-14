@@ -186,21 +186,37 @@
                 <div class="inline-block bg-blue-100 text-blue-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
                     <i class="fas fa-star mr-2"></i>BESTSELLER
                 </div>
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Preporučeni proizvodi</h2>
-                <p class="text-gray-600 text-lg">Najbolji izbor iz naše bogate ponude</p>
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+                    @if($loggedin)
+                        Za vas preporučeno
+                    @else
+                        Preporučeni proizvodi
+                    @endif
+                </h2>
+                <p class="text-gray-600 text-lg">
+                    @if($loggedin)
+                        Na osnovu vaše istorije narudžbina
+                    @else
+                        Najbolji izbor iz naše bogate ponude
+                    @endif
+                </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach($featuredProducts as $product)
+                @foreach($featuredProducts as $index => $product)
                 <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden relative">
-                    @if($loop->first || $loop->iteration == 3)
+                    @if($index == 0)
                     <span class="badge-new">
-                        <i class="fas fa-fire mr-1"></i>{{ $loop->first ? 'NOVO' : 'AKCIJA' }}
+                        <i class="fas fa-fire mr-1"></i>TOP PREPORUKA
+                    </span>
+                    @elseif($index < 3)
+                    <span class="badge-new">
+                        <i class="fas fa-star mr-1"></i>PREPORUKA
                     </span>
                     @endif
                     
                     <div class="p-4">
-                        <img src="{{ asset( "assets".$product->file_path) }}" 
+                        <img src="{{ asset('storage/'.$product->file_path) }}" 
                              alt="{{ $product->name }}" 
                              class="product-image">
                     </div>
@@ -218,15 +234,22 @@
                         </p>
                         <div class="flex items-center justify-between">
                             <span class="price-tag">{{ number_format($product->price, 0, ',', '.') }} din/kg</span>
-                            <form action="#" method="POST">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit"
+                            @if($loggedin)
+                                <form action="{{ route('cart.add', $product->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <span>Dodaj</span>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('prijava') }}"
                                     class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-2">
                                     <i class="fas fa-shopping-cart"></i>
                                     <span>Dodaj</span>
-                                </button>
-                            </form>
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -235,78 +258,6 @@
         </div>
     </section>
 
-    <!-- All Products Preview -->
-    <section id="proizvodi" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Naši proizvodi</h2>
-                <p class="text-gray-600 text-lg">Pronađite savršenu ribu za svaku priliku</p>
-            </div>
-
-           
-
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                @foreach($featuredProducts->take(8) as $product)
-                <div class="group relative bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
-                    <div class="p-4">
-                        <img src="{{ asset( "assets".$product->file_path) }}" 
-                             alt="{{ $product->name }}" 
-                             class="product-image">
-                    </div>
-                    
-                    <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="px-3 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-sm">
-                                {{ ucfirst($product->category) }}
-                            </span>
-                            <div class="flex items-center gap-1">
-                                <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <span class="font-bold text-gray-900">{{ number_format(rand(45, 50) / 10, 1) }}</span>
-                            </div>
-                        </div>
-                        
-                        <h2 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
-                            {{ $product->name }}
-                        </h2>
-                        
-                        <p class="text-sm text-gray-600 mb-6 leading-relaxed">
-                            {{ $product->description }}
-                        </p>
-                        
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                            <div>
-                                <span class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                                    {{ number_format($product->price, 2) }}
-                                </span>
-                                <span class="text-sm text-gray-500 font-medium ml-1">RSD</span>
-                            </div>
-                            <form action="#" method="POST">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <button type="submit"
-                                    class="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg flex items-center gap-2 group">
-                                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-                                    </svg>
-                                    Dodaj
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-
-            <div class="text-center mt-12">
-                <a href="/proizvodi"
-                    class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-10 py-4 rounded-xl transition font-semibold shadow-lg text-lg">
-                    <i class="fas fa-arrow-right mr-2"></i>Pogledajte sve proizvode
-                </a>
-            </div>
-        </div>
-    </section>
 
     <!-- Features Section -->
     <section class="py-20 bg-white">

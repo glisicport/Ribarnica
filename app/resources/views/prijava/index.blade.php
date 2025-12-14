@@ -133,7 +133,7 @@
             <!-- Registracija link -->
             <p class="text-center text-gray-500 text-base mt-6">
                 Nemate nalog? 
-                <a class="text-glavna hover:text-glavna-hover font-semibold transition duration-150" href="#">
+                <a class="text-glavna hover:text-glavna-hover font-semibold transition duration-150" href="{{ route('registracija') }}">
                     Registrujte se!
                 </a>
             </p>

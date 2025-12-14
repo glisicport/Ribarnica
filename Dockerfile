@@ -1,4 +1,5 @@
 FROM php:8.2-cli
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 WORKDIR /var/www/html
 

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_categories_id')->constrained()->cascadeOnDelete();
             $table->string('name');
+            $table->float('stock');
             $table->decimal('price', 10, 2);
             $table->text('description')->nullable();
             $table->string('file_path');
