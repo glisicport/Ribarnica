@@ -19,7 +19,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminAboutUsController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminGalleryController;
-
+use App\Http\Middleware\Authenticate;
 // Admin namespace controllers
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\ContactInfoController;
@@ -37,7 +37,6 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/o-nama', [about_us::class, 'index'])->name('o-nama');
 Route::get('/proizvodi', [ProductsController::class, 'index'])->name('proizvodi');
 Route::get('/Galerija', [Gallery::class, 'index'])->name('galerija');
-Route::get('/stara-prijava', [AccountController::class, 'index'])->name('llogin');
 
 Route::get('/contact', [ContactController::class, 'index'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
@@ -53,7 +52,7 @@ Route::post('/registracija', [AuthController::class, 'register'])->name('registr
 | Authenticated routes
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])->group(function () {
+Route::middleware(Authenticate::class)->group(function () {
     // Logout (single route)
     Route::post('/odjava', [AuthController::class, 'logout'])->name('odjava');
 
