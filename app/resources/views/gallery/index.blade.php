@@ -214,7 +214,7 @@ function showMeni(){
         div.id = "meniSlide";
         div.className = "slide";
         div.innerHTML = `
-            <img src="{{ asset('images/ambijent/meni.png') }}" style="width:100%; height:auto; object-fit:contain; border-radius:15px;">
+            <img src="{{ asset('storage/images/ambijent/meni.png') }}" style="width:100%; height:auto; object-fit:contain; border-radius:15px;">
         `;
         document.getElementById("slider").appendChild(div);
     }

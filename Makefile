@@ -97,9 +97,14 @@ drop-table:
 # -------------------------------
 baza: migrate
 	@echo "Baza spremna!"
-
-build: env up key
-	@echo "Projekat izgradjen i baza spremna!"
+storage:
+	docker cp .\storage\ ribarnica-app:/var/www/html/app/
+	@echo "Storage folder kopiran u kontejner!"
+storage-link:
+	docker exec  $(APP_CONTAINER) php artisan storage:link
+	@echo "Storage link kreiran!"
+build: env up key storage storage-link
+	@echo "Projekat izgradjen sledi da se odradi baza!"
 
 dev-setup: env up key composer-local
 	@echo "Development okruzenje spremno sa lokalnim vendor folderom!"

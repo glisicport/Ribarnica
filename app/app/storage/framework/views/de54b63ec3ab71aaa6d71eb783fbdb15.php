@@ -1,0 +1,1 @@
+<?php /**PATH /var/www/html/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
