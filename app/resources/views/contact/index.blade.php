@@ -54,7 +54,7 @@
                             </p>
                             <p class="font-semibold text-slate-900 text-lg flex items-center gap-2">
                                 <i class="fas fa-envelope-open-text text-sky-500"></i>
-                                {{ $contactInfo->email_value ?? 'tfzrribarnica@gmail.com' }}
+                                {{ $contactInfo->email_value ?? 'tfzrrb@gmail.com' }}
                             </p>
                         </div>
 

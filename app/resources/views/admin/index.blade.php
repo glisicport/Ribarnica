@@ -40,28 +40,55 @@
 <div class="flex h-screen overflow-hidden">
     @include('common.sidebar')
 
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50">
+    <main class="flex-1 flex flex-col overflow-y-auto bg-slate-50">
         @include('common.admin_topbar')
 
-        <!-- Ovde ide specifičan sadržaj stranice -->
-        <div class="flex-1 overflow-y-auto bg-slate-50 p-6 lg:p-8">
-            @yield('content')
+        <div class="p-6 flex-1 min-h-[calc(100vh-4rem)]">
+            <!-- Dynamic Content Based on currentPage Type -->
+            @if($currentPage === 'products' || empty($currentPage))
+                @include('admin.products.index')
+            @elseif($currentPage === 'gallery')
+                @include('admin.gallery.index')
+            @elseif($currentPage === 'about')
+                @include('admin.about_us.index')
+            @elseif($currentPage === 'employees')
+                @include('admin.employees.index')
+            @elseif($currentPage === 'settings')
+                @include('admin.settings.index')
+            @elseif($currentPage === 'orders')
+                @include('admin.orders.index')
+            @elseif($currentPage === 'faq')
+                @include('admin.contact.partials.faq_table', [
+                    'items' => $items ?? []
+                ])
+            @elseif($currentPage === 'quick-facts')
+                @include('admin.contact.partials.quick_facts_table', [
+                    'items' => $items ?? []
+                ])
+            @elseif($currentPage === 'poruke')
+                @include('admin.contact.partials.questions_table', [
+                    'questions' => $questions ?? []
+                ])
+            @elseif($currentPage === 'contact_info')
+                @include('admin.contact.partials.contact_info_table', [
+                    'items' => $items ?? []
+                ])
+            @else
+                <p class="text-sm text-slate-500">
+                    Izabrani panel ne postoji.
+                </p>
+            @endif
         </div>
     </main>
 </div>
 
 <script>
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        document.getElementById(tabName + '-tab').classList.remove('hidden');
-
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('tab-active');
-            btn.classList.add('tab-inactive');
-        });
-        event.target.closest('.tab-btn').classList.remove('tab-inactive');
-        event.target.closest('.tab-btn').classList.add('tab-active');
-    }
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('tab-inactive');
+    });
+    event.target.closest('.tab-btn').classList.remove('tab-inactive');
+    event.target.closest('.tab-btn').classList.add('tab-active');
 </script>
 
 </body>

@@ -80,6 +80,15 @@
     </a>
 </li>
 
+                <!-- Link: Orders -->
+                <a href="{{ route('kontrolni-panel', ['page_type' => 'orders']) }}" class="group flex items-center px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 hover:bg-brand-600 hover:shadow-lg hover:shadow-brand-500/20 text-slate-300 hover:text-white {{ request('page_type') == 'orders' ? 'bg-brand-600 text-white' : '' }}">
+                    <svg class="mr-3 h-5 w-5 text-slate-400 group-hover:text-white transition-colors {{ request('page_type') == 'orders' ? 'text-white' : '' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Porudžbine
+                </a>
+
+    
 
             </nav>
 

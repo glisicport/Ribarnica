@@ -88,12 +88,17 @@
 
                 </div>
 
-                <button class="relative hover:text-blue-200 transition">
-                    <i class="fas fa-shopping-cart text-xl"></i>
-                    <span id="cartCount"
-                        class="hidden absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">0</span>
-                </button>
-                <button onclick="toggleMenu()" class="lg:hidden text-2xl">
+            <a href="/cart" class="relative hover:text-blue-200 transition">
+                <i class="fas fa-shopping-cart text-xl"></i>
+
+                @if($cartCount > 0)
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs 
+                        rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                        {{ $cartCount }}
+                    </span>
+                @endif
+            </a>
+                <a onclick="toggleMenu()" class="lg:hidden text-2xl">
                     <i id="menuIcon" class="fas fa-bars"></i>
                 </button>
             </div>

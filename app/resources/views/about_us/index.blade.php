@@ -206,7 +206,7 @@
     </div>
 
     <div class="about-image">
-        <img src="{{ asset('storage/images/' . $about->image) }}" alt="Slika o nama">
+        <img src="{{ asset('storage/' . $about->image) }}" alt="Slika o nama">
     </div>
 </div>
 

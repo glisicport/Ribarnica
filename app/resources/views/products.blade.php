@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="sr">
 
@@ -49,6 +50,53 @@
 
     @include('common.topbar')
 
+{{-- Success Popup --}}
+@if(session('success'))
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-green-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+        <p class="text-green-700 font-semibold text-lg">{{ session('success') }}</p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
+
+{{-- Error Popup --}}
+@if($errors->any())
+<div x-data="{ open: true }" x-show="open" x-transition
+     class="fixed inset-0 flex items-center justify-center z-50">
+    
+    <!-- Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-30"></div>
+
+    <!-- Modal -->
+    <div class="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full relative z-50 flex flex-col items-center text-center">
+        <svg class="w-12 h-12 text-red-500 mb-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        <p class="text-red-700 font-semibold text-lg">
+            @foreach($errors->all() as $error)
+                {{ $error }}<br>
+            @endforeach
+        </p>
+        <button @click="open = false" 
+                class="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
+            U redu
+        </button>
+    </div>
+</div>
+@endif
 
     <div class="container mx-auto px-4 py-8 lg:py-12">
         <div class="flex flex-col lg:flex-row gap-8 items-start">
@@ -223,14 +271,44 @@
                                             <span class="text-xs text-gray-500 font-medium">RSD/kg</span>
                                         </div>
 
-                                        <form action="#" method="POST">
-                                            @csrf
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                            <button
-                                                class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
-                                                <i class="fas fa-shopping-cart"></i>
-                                            </button>
-                                        </form>
+                                           <!-- Button to open modal -->
+                                    <div x-data="{ open: false, productId: null, quantity: 1 }" x-cloak>
+    <!-- Dugme za otvaranje modala -->
+    <button
+        @click="open = true; productId = {{ $product->id }};"
+        class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-all shadow-md hover:shadow-lg">
+        <i class="fas fa-shopping-cart"></i>
+    </button>
+
+    <!-- Modal -->
+    <div
+        x-show="open"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        style="display: none;"  <!-- ovo je za Alpine.js -->
+    >
+        <div class="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 class="text-xl font-bold mb-4">Dodaj proizvod u korpu</h2>
+
+            <form :action="`/cart/add/${productId}`" method="POST">
+                @csrf
+                <label class="block mb-2 font-medium">Koliko kilograma želite?</label>
+                <input type="number" name="quantity" x-model="quantity" min="0.1" step="0.1"
+                       class="w-full border rounded px-3 py-2 mb-4" required>
+
+                <div class="flex justify-end gap-2">
+                    <button type="button" @click="open = false"
+                            class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Otkaži</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Dodaj u korpu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -263,6 +341,7 @@
             <p class="text-gray-500 text-sm">&copy; {{ date('Y') }} Ribarnica Tfzr. Sva prava zadržana.</p>
         </div>
     </footer>
+<script src="//unpkg.com/alpinejs" defer></script>
 
 </body>
 
