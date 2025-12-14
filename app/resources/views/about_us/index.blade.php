@@ -227,7 +227,7 @@
 <div class="employees-grid">
     @foreach($employees as $emp)
         <div class="employee-card">
-            <img class="employee-photo" src="{{ asset('storage/images/' . $emp->photo) }}" alt="Foto zaposlenog">
+            <img class="employee-photo" src="{{ asset('storage/' . $emp->photo) }}" alt="Foto zaposlenog">
 
             <div class="employee-name">{{ $emp->name }} {{ $emp->last_name }}</div>
             <div class="employee-position">{{ $emp->position }}</div>
